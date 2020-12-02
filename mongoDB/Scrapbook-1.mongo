@@ -1,0 +1,90 @@
+db.firstCollection.insert({ name: "Louise",currentEmployee: true, dept: "Finance", salary: 1200 })
+db.firstCollection.insert({ name: "Rayna",currentEmployee: true, dept: "R&D", salary: 2300 })
+db.firstCollection.insert({ name: "Soren",currentEmployee: false , dept: "Finance", salary: 1500 })
+db.firstCollection.insert({ name: "Loreli",currentEmployee: false , dept: "Sales", salary: 800 })
+db.firstCollection.insert({ name: "Milo",currentEmployee: true, dept: "Sales", salary: 950 })
+db.firstCollection.insert({ name: "Brendon",currentEmployee: false, dept: "Finance", salary: 1100 })
+
+db.firstCollection.aggregate([
+                     { $match: { currentEmployee: true } },
+                     { $group: 
+                        { _id: "$dept", 
+                            totalSalaries: { $max: "$salary" } 
+                        } 
+                     },
+                     { $sort: { totalSalaries: -1}}
+                   ])
+
+db.linkedon.find({})
+
+db.firstCollection.remove({})
+
+db.firstCollection.find({})
+
+//HomeWork:
+
+db.linkedon.aggregate([
+{ $match: { salary: { $gt: 25000} } },
+{
+     $group : {
+            _id: null,
+            count: { $sum: 1 } 
+        }
+}])
+
+db.linkedon.find({},{
+    "_id": 0,
+    firstName: 1,
+    salary: 1
+}).sort( {salary: -1}).limit(3)
+
+db.linkedon.aggregate([
+{ $match: { "currentCompany.name": "Walmart", salary: {$gte: 7000}} },
+{
+     $group : {
+            _id: null,
+            count: { $sum: 1 } 
+        }
+}])
+
+//4
+db.linkedon.find({$or: [{"currentCompany.industry": "Sales"},{"currentCompany.industry": "Retail"}]},
+{
+    _id: 0,
+    firstName: 1,
+    lastName: 1,
+    "currentCompany.name": 1,
+    salary: 1
+})
+.sort( {salary: -1}).limit(1)
+
+//5
+db.linkedon.aggregate([
+{ $match: {$or: [
+    {"currentCompany.name": "Apple"},
+    {"previousCompanies.name": "Apple"}
+]}},
+{$group : {_id: null,count: { $sum: 1 } }}])
+
+//6
+db.linkedon.aggregate([
+{ $match: {"currentCompany.name": "Apple"}},
+{
+    $group : {_id: "$currentCompany.industry",count: { $sum: 1 } }
+}])
+
+//7
+db.linkedon.aggregate([
+{ $match: { "currentPosition": "Analyst"}},
+{
+    $group : {
+        _id: "$currentCompany.name",averageSalary: { $avg: "$salary" } }
+}])
+
+//8
+db.linkedon.aggregate([
+{ $match: { $and: [{$or: [{"currentCompany.name": "Apple"},{"currentCompany.name": "Google"}]},{"currentCompany.industry": "Tech"}]}},
+{
+    $group : {
+        _id: "$lastName",average: { $avg: "$salary" } }
+}, {$sort: {average: -1}}])
