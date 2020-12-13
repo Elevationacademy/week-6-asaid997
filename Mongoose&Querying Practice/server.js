@@ -75,15 +75,3 @@ app.listen(3000, function() {
   console.log("Server up and running on port 3000")
 })
 
-
-/*People
-----------------------*/
-//1. Find all the people who are tall (>180) AND rich (>30000)
-
-//2. Find all the people who are tall (>180) OR rich (>30000)
-
-//3. Find all the people who have grey hair or eyes, and are skinny (<70)
-
-//4. Find people who have at least 1 kid with grey hair
-
-//5. Find all the people who have at least one overweight kid, and are overweight themselves (>100)
